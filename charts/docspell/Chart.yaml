@@ -1,0 +1,7 @@
+apiVersion: v2
+name: docspell
+description: A Helm chart to deploy docspell to Kubernetes
+home: https://docspell.org/
+type: application
+version: 0.0.1
+appVersion: "0.40.0"

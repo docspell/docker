@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: docspell-restserver
+  labels:
+    app: docspell-restserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docspell-restserver
+  template:
+    metadata:
+      labels:
+        app: docspell-restserver
+        config-hash: {{ .Values.docspell.restserver.config | adler32sum | quote }}
+    spec:
+      containers:
+      - name: restserver
+        image: {{ print .Values.docspell.restserver.image.repo ":" (.Values.docspell.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
+        imagePullPolicy: IfNotPresent
+        args: ['/opt/docspell.conf']
+        envFrom:
+        - secretRef:
+            name: {{ .Values.docspell.jdbc.credentialsSecretName }}
+        volumeMounts:
+        - name: config
+          mountPath: /opt/docspell.conf
+          subPath: config
+        ports:
+        - name: api
+          containerPort: 7880
+          protocol: TCP
+      volumes:
+      - name: config
+        secret:
+          secretName: restserver-config

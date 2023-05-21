@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: docspell-joex
+  labels:
+    app: docspell-joex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docspell-joex
+  serviceName: docspell-joex
+  template:
+    metadata:
+      labels:
+        app: docspell-joex
+        config-hash: {{ .Values.docspell.joex.config | adler32sum | quote }}
+    spec:
+      containers:
+      - name: joex
+        image: {{ print .Values.docspell.joex.image.repo ":" (.Values.docspell.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
+        imagePullPolicy: IfNotPresent
+        command: ['/custom-entrypoint.sh']
+        args: ['/opt/docspell.conf']
+        envFrom:
+        - secretRef:
+            name: {{ .Values.docspell.jdbc.credentialsSecretName }}
+        ports:
+        - name: api
+          containerPort: 7878
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /opt/docspell.conf
+          subPath: config
+        - name: configmap
+          mountPath: /custom-entrypoint.sh
+          subPath: entrypoint.sh
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: joex-config
+      - name: configmap
+        configMap:
+          name: joex-configmap
+          defaultMode: 0755

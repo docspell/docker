@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docspell-restserver
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/proxy-body-size: '0'
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.docspell.restserver.publicDomain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docspell-restserver
+            port:
+              number: 7880
+  tls:
+  - hosts:
+    - {{ .Values.docspell.restserver.publicDomain }}
+    secretName: docspell-tls-secret
