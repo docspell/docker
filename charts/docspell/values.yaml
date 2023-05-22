@@ -86,6 +86,11 @@ docspell:
           }
         }
       }
+    ingress:
+      enabled: false
+      className: ''
+      annotations: {}
+      tlsSecretName: null
 
   joex:
     image:

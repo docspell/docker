@@ -1,19 +1,22 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: docspell-joex
+  name: {{ include "docspell.fullname" . }}-joex
   labels:
-    app: docspell-joex
+    {{- include "docspell.labels" . | nindent 4 }}
+    docspell-component: joex
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: docspell-joex
+      {{- include "docspell.selectorLabels" . | nindent 6 }}
+      docspell-component: joex
   serviceName: docspell-joex
   template:
     metadata:
       labels:
-        app: docspell-joex
+        {{- include "docspell.selectorLabels" . | nindent 8 }}
+        docspell-component: joex
         config-hash: {{ .Values.docspell.joex.config | adler32sum | quote }}
     spec:
       containers:
@@ -40,8 +43,8 @@ spec:
       volumes:
       - name: config
         secret:
-          secretName: joex-config
+          secretName: {{ include "docspell.fullname" . }}-joex-config
       - name: configmap
         configMap:
-          name: joex-configmap
+          name: {{ include "docspell.fullname" . }}-joex-configmap
           defaultMode: 0755

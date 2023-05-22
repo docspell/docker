@@ -1,7 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: joex-configmap
+  name: {{ include "docspell.fullname" . }}-joex-configmap
+  labels:
+    {{- include "docspell.labels" . | nindent 4 }}
+    docspell-component: joex
 data:
   entrypoint.sh: |
     #!/bin/sh

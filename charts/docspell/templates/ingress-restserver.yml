@@ -1,12 +1,18 @@
+{{- if .Values.docspell.restserver.ingress.enabled -}}
+{{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: docspell-restserver
+  name: {{ include "docspell.fullname" . }}-restserver
+  labels:
+    {{- include "docspell.labels" . | nindent 4 }}
+    docspell-component: restserver
+  {{- with .Values.docspell.restserver.ingress.annotations }}
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    nginx.ingress.kubernetes.io/proxy-body-size: '0'
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
   - host: {{ .Values.docspell.restserver.publicDomain }}
     http:
@@ -15,10 +21,13 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: docspell-restserver
+            name: {{ include "docspell.fullname" . }}-restserver
             port:
               number: 7880
+  {{- if .Values.docspell.restserver.ingress.tlsSecretName }}
   tls:
   - hosts:
     - {{ .Values.docspell.restserver.publicDomain }}
-    secretName: docspell-tls-secret
+    secretName: {{ .Values.docspell.restserver.ingress.tlsSecretName }}
+  {{- end }}
+{{- end }}

@@ -1,18 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: docspell-restserver
+  name: {{ include "docspell.fullname" . }}-restserver
   labels:
-    app: docspell-restserver
+    {{- include "docspell.labels" . | nindent 4 }}
+    docspell-component: restserver
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: docspell-restserver
+      {{- include "docspell.selectorLabels" . | nindent 6 }}
+      docspell-component: restserver
   template:
     metadata:
       labels:
-        app: docspell-restserver
+        {{- include "docspell.selectorLabels" . | nindent 8 }}
+        docspell-component: restserver
         config-hash: {{ .Values.docspell.restserver.config | adler32sum | quote }}
     spec:
       containers:
@@ -34,4 +37,4 @@ spec:
       volumes:
       - name: config
         secret:
-          secretName: restserver-config
+          secretName: {{ include "docspell.fullname" . }}-restserver-config
