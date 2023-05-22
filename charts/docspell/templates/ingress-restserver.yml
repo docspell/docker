@@ -1,5 +1,4 @@
 {{- if .Values.restserver.ingress.enabled -}}
-{{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -12,7 +11,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: {{ .Values.ingress.className }}
+  ingressClassName: {{ .Values.restserver.ingress.className }}
   rules:
   - host: {{ .Values.restserver.publicDomain }}
     http:

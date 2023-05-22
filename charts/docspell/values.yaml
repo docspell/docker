@@ -34,7 +34,7 @@ restserver:
       app-name = {{ .Values.restserver.appName | quote }}
       app-id = ${HOSTNAME}
       {{- if .Values.restserver.ingress.enabled }}
-      base-url = {{ print (ternary "https" "http" .Values.restserver.ingress.tlsSecretName) "://" .Values.restserver.publicDomain | quote }}
+      base-url = {{ print (ternary "https" "http"  (not (not .Values.restserver.ingress.tlsSecretName))) "://" .Values.restserver.publicDomain | quote }}
       {{- end }}
       internal-url = "http://{{ include "docspell.fullname" . }}-restserver:{{ .Values.restserver.bindPort }}"
 
