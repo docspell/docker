@@ -53,6 +53,12 @@ docspell:
           server-secret = {{ .Values.docspell.restserver.serverSecret | required "The server secret must be a long random string!" | quote }}
         }
 
+        {{- if .Values.adminEndpointSecret }}
+        admin-endpoint {
+          secret = {{ .Values.adminEndpointSecret | quote }}
+        }
+        {{- end }}
+
         # Configuration for the backend.
         backend {
           jdbc {
