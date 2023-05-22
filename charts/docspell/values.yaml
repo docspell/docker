@@ -1,5 +1,6 @@
 image:
   tag: null
+  pullPolicy: IfNotPresent
 
 jdbc:
   host: 'localhost'
@@ -13,6 +14,8 @@ files:
 restserver:
   image:
     repo: 'docspell/restserver'
+    tag: null
+    pullPolicy: null
   publicDomain: documents.example.org
   serverSecret: null
   signup:
@@ -94,6 +97,8 @@ restserver:
 joex:
   image:
     repo: 'docspell/joex'
+    tag: null
+    pullPolicy: null
   config: |
     docspell.joex {
       app-id = ${HOSTNAME}
