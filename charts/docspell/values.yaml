@@ -16,6 +16,11 @@ docspell:
       repo: 'docspell/restserver'
     publicDomain: documents.example.org
     serverSecret: null
+    signup:
+      mode: open
+      invite:
+        password: null
+        time: '3 days'
     config: |
       docspell.server {
         app-name = "Docspell"
@@ -69,7 +74,11 @@ docspell:
 
           # Configuration for registering new users.
           signup {
-            mode = "open"
+            mode = {{ .Values.docspell.restserver.signup.mode | quote }}
+            {{- if eq .Values.docspell.restserver.signup.mode "invite" }}
+            new-invite-password = {{ .Values.docspell.restserver.signup.invite.password | required "the invite password is required in invite mode!" | quote }}
+            invite-time = {{ .Values.docspell.restserver.signup.invite.time | required "the invite time is required in invite mode!" | quote }}
+            {{- end}}
           }
 
           files {
