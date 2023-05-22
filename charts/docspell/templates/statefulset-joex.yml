@@ -19,6 +19,10 @@ spec:
         docspell-component: joex
         config-hash: {{ .Values.joex.config | adler32sum | quote }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: joex
         image: {{ print .Values.joex.image.repo ":" (.Values.joex.image.tag | default .Values.image.tag | default (print "v" .Chart.AppVersion)) | quote }}

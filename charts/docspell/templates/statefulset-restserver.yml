@@ -18,6 +18,10 @@ spec:
         docspell-component: restserver
         config-hash: {{ .Values.restserver.config | adler32sum | quote }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: restserver
         image: {{ print .Values.restserver.image.repo ":" (.Values.restserver.image.tag | default .Values.image.tag | default (print "v" .Chart.AppVersion)) | quote }}

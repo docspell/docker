@@ -2,6 +2,10 @@ image:
   tag: null
   pullPolicy: IfNotPresent
 
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
 jdbc:
   host: 'localhost'
   port: 5432
