@@ -20,6 +20,7 @@ restserver:
     repo: 'docspell/restserver'
     tag: null
     pullPolicy: null
+  appName: Docspell
   publicDomain: documents.example.org
   serverSecret: null
   signup:
@@ -29,10 +30,12 @@ restserver:
       time: '3 days'
   config: |
     docspell.server {
-      app-name = "Docspell"
+      app-name = {{ .Values.restserver.appName | quote }}
       app-id = ${HOSTNAME}
-      # base-url = "https://{{ .Values.restserver.publicDomain }}"
-      internal-url = "http://docspell-restserver:7880"
+      {{- if .Values.restserver.ingress.enabled }}
+      base-url = {{ print (ternary "https" "http" .Values.restserver.ingress.tlsSecretName) "://" .Values.restserver.publicDomain | quote }}
+      {{- end }}
+      internal-url = "http://{{ include "docspell.fullname" . }}-restserver:7880"
 
       logging {
         minimum-level = "Debug"
