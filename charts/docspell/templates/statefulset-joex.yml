@@ -17,17 +17,17 @@ spec:
       labels:
         {{- include "docspell.selectorLabels" . | nindent 8 }}
         docspell-component: joex
-        config-hash: {{ .Values.docspell.joex.config | adler32sum | quote }}
+        config-hash: {{ .Values.joex.config | adler32sum | quote }}
     spec:
       containers:
       - name: joex
-        image: {{ print .Values.docspell.joex.image.repo ":" (.Values.docspell.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
+        image: {{ print .Values.joex.image.repo ":" (.Values.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
         imagePullPolicy: IfNotPresent
         command: ['/custom-entrypoint.sh']
         args: ['/opt/docspell.conf']
         envFrom:
         - secretRef:
-            name: {{ .Values.docspell.jdbc.credentialsSecretName }}
+            name: {{ .Values.jdbc.credentialsSecretName }}
         ports:
         - name: api
           containerPort: 7878

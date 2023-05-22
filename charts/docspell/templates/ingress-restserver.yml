@@ -1,4 +1,4 @@
-{{- if .Values.docspell.restserver.ingress.enabled -}}
+{{- if .Values.restserver.ingress.enabled -}}
 {{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -7,14 +7,14 @@ metadata:
   labels:
     {{- include "docspell.labels" . | nindent 4 }}
     docspell-component: restserver
-  {{- with .Values.docspell.restserver.ingress.annotations }}
+  {{- with .Values.restserver.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
-  - host: {{ .Values.docspell.restserver.publicDomain }}
+  - host: {{ .Values.restserver.publicDomain }}
     http:
       paths:
       - path: /
@@ -24,10 +24,10 @@ spec:
             name: {{ include "docspell.fullname" . }}-restserver
             port:
               number: 7880
-  {{- if .Values.docspell.restserver.ingress.tlsSecretName }}
+  {{- if .Values.restserver.ingress.tlsSecretName }}
   tls:
   - hosts:
-    - {{ .Values.docspell.restserver.publicDomain }}
-    secretName: {{ .Values.docspell.restserver.ingress.tlsSecretName }}
+    - {{ .Values.restserver.publicDomain }}
+    secretName: {{ .Values.restserver.ingress.tlsSecretName }}
   {{- end }}
 {{- end }}

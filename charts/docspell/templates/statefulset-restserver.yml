@@ -16,16 +16,16 @@ spec:
       labels:
         {{- include "docspell.selectorLabels" . | nindent 8 }}
         docspell-component: restserver
-        config-hash: {{ .Values.docspell.restserver.config | adler32sum | quote }}
+        config-hash: {{ .Values.restserver.config | adler32sum | quote }}
     spec:
       containers:
       - name: restserver
-        image: {{ print .Values.docspell.restserver.image.repo ":" (.Values.docspell.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
+        image: {{ print .Values.restserver.image.repo ":" (.Values.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
         imagePullPolicy: IfNotPresent
         args: ['/opt/docspell.conf']
         envFrom:
         - secretRef:
-            name: {{ .Values.docspell.jdbc.credentialsSecretName }}
+            name: {{ .Values.jdbc.credentialsSecretName }}
         volumeMounts:
         - name: config
           mountPath: /opt/docspell.conf

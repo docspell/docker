@@ -1,125 +1,124 @@
-docspell:
+image:
+  tag: null
+
+jdbc:
+  host: 'localhost'
+  port: 5432
+  database: docspell
+  credentialsSecretName: credentialsSecretName
+
+files:
+  config: ''
+
+restserver:
   image:
-    tag: null
+    repo: 'docspell/restserver'
+  publicDomain: documents.example.org
+  serverSecret: null
+  signup:
+    mode: open
+    invite:
+      password: null
+      time: '3 days'
+  config: |
+    docspell.server {
+      app-name = "Docspell"
+      app-id = ${HOSTNAME}
+      # base-url = "https://{{ .Values.restserver.publicDomain }}"
+      internal-url = "http://docspell-restserver:7880"
 
-  jdbc:
-    host: 'localhost'
-    port: 5432
-    database: docspell
-    credentialsSecretName: credentialsSecretName
+      logging {
+        minimum-level = "Debug"
 
-  files:
-    config: ''
-
-  restserver:
-    image:
-      repo: 'docspell/restserver'
-    publicDomain: documents.example.org
-    serverSecret: null
-    signup:
-      mode: open
-      invite:
-        password: null
-        time: '3 days'
-    config: |
-      docspell.server {
-        app-name = "Docspell"
-        app-id = ${HOSTNAME}
-        # base-url = "https://{{ .Values.docspell.restserver.publicDomain }}"
-        internal-url = "http://docspell-restserver:7880"
-
-        logging {
-          minimum-level = "Debug"
-
-          levels = {
-            "docspell" = "Debug"
-          }
-        }
-
-        bind {
-          address = "0.0.0.0"
-          port = 7880
-        }
-
-        integration-endpoint {
-          enabled = false
-        }
-
-        full-text-search {
-          enabled = true
-          backend = "postgresql"
-
-          postgresql = {
-            use-default-connection = true
-          }
-        }
-
-        auth {
-          server-secret = {{ .Values.docspell.restserver.serverSecret | required "The server secret must be a long random string!" | quote }}
-        }
-
-        {{- if .Values.adminEndpointSecret }}
-        admin-endpoint {
-          secret = {{ .Values.adminEndpointSecret | quote }}
-        }
-        {{- end }}
-
-        # Configuration for the backend.
-        backend {
-          jdbc {
-            url = {{ print "jdbc:postgresql://" .Values.docspell.jdbc.host ":" .Values.docspell.jdbc.port "/" .Values.docspell.jdbc.database | quote }}
-            user = ${username}
-            password = ${password}
-          }
-
-          # Configuration for registering new users.
-          signup {
-            mode = {{ .Values.docspell.restserver.signup.mode | quote }}
-            {{- if eq .Values.docspell.restserver.signup.mode "invite" }}
-            new-invite-password = {{ .Values.docspell.restserver.signup.invite.password | required "the invite password is required in invite mode!" | quote }}
-            invite-time = {{ .Values.docspell.restserver.signup.invite.time | required "the invite time is required in invite mode!" | quote }}
-            {{- end}}
-          }
-
-          files {
-      {{ tpl (.Values.docspell.files.config | default "" | indent 6) $ }}
-          }
+        levels = {
+          "docspell" = "Debug"
         }
       }
-    ingress:
-      enabled: false
-      className: ''
-      annotations: {}
-      tlsSecretName: null
 
-  joex:
-    image:
-      repo: 'docspell/joex'
-    config: |
-      docspell.joex {
-        app-id = ${HOSTNAME}
-        base-url = ${BASE_URL}
-        bind {
-          address = "0.0.0.0"
-          port = 7878
+      bind {
+        address = "0.0.0.0"
+        port = 7880
+      }
+
+      integration-endpoint {
+        enabled = false
+      }
+
+      full-text-search {
+        enabled = true
+        backend = "postgresql"
+
+        postgresql = {
+          use-default-connection = true
         }
+      }
 
+      auth {
+        server-secret = {{ .Values.restserver.serverSecret | required "The server secret must be a long random string!" | quote }}
+      }
+
+      {{- if .Values.adminEndpointSecret }}
+      admin-endpoint {
+        secret = {{ .Values.adminEndpointSecret | quote }}
+      }
+      {{- end }}
+
+      # Configuration for the backend.
+      backend {
         jdbc {
-          url = {{ print "jdbc:postgresql://" .Values.docspell.jdbc.host ":" .Values.docspell.jdbc.port "/" .Values.docspell.jdbc.database | quote }}
+          url = {{ print "jdbc:postgresql://" .Values.jdbc.host ":" .Values.jdbc.port "/" .Values.jdbc.database | quote }}
           user = ${username}
           password = ${password}
         }
 
-        full-text-search {
-          enabled = true
-          backend = "postgresql"
-
-          postgresql = {
-            use-default-connection = true
-          }
+        # Configuration for registering new users.
+        signup {
+          mode = {{ .Values.restserver.signup.mode | quote }}
+          {{- if eq .Values.restserver.signup.mode "invite" }}
+          new-invite-password = {{ .Values.restserver.signup.invite.password | required "the invite password is required in invite mode!" | quote }}
+          invite-time = {{ .Values.restserver.signup.invite.time | required "the invite time is required in invite mode!" | quote }}
+          {{- end}}
         }
 
         files {
-      {{ tpl (.Values.docspell.files.config | default "" | indent 4) $ }}
+    {{ tpl (.Values.files.config | default "" | indent 6) $ }}
         }
       }
+    }
+  ingress:
+    enabled: false
+    className: ''
+    annotations: {}
+    tlsSecretName: null
+
+joex:
+  image:
+    repo: 'docspell/joex'
+  config: |
+    docspell.joex {
+      app-id = ${HOSTNAME}
+      base-url = ${BASE_URL}
+      bind {
+        address = "0.0.0.0"
+        port = 7878
+      }
+
+      jdbc {
+        url = {{ print "jdbc:postgresql://" .Values.jdbc.host ":" .Values.jdbc.port "/" .Values.jdbc.database | quote }}
+        user = ${username}
+        password = ${password}
+      }
+
+      full-text-search {
+        enabled = true
+        backend = "postgresql"
+
+        postgresql = {
+          use-default-connection = true
+        }
+      }
+
+      files {
+    {{ tpl (.Values.files.config | default "" | indent 4) $ }}
+      }
+    }
