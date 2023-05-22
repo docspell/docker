@@ -23,7 +23,7 @@ spec:
           service:
             name: {{ include "docspell.fullname" . }}-restserver
             port:
-              number: 7880
+              number: {{ .Values.restserver.bindPort }}
   {{- if .Values.restserver.ingress.tlsSecretName }}
   tls:
   - hosts:

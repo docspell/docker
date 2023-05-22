@@ -36,7 +36,7 @@ spec:
           subPath: config
         ports:
         - name: api
-          containerPort: 7880
+          containerPort: {{ .Values.restserver.bindPort }}
           protocol: TCP
       volumes:
       - name: config

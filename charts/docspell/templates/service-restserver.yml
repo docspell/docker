@@ -8,8 +8,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 7880
-      targetPort: 7880
+    - port: {{ .Values.restserver.bindPort }}
+      targetPort: {{ .Values.restserver.bindPort }}
       protocol: TCP
       name: api
   selector:

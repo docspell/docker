@@ -23,6 +23,7 @@ restserver:
   appName: Docspell
   publicDomain: documents.example.org
   serverSecret: null
+  bindPort: 7880
   signup:
     mode: open
     invite:
@@ -35,7 +36,7 @@ restserver:
       {{- if .Values.restserver.ingress.enabled }}
       base-url = {{ print (ternary "https" "http" .Values.restserver.ingress.tlsSecretName) "://" .Values.restserver.publicDomain | quote }}
       {{- end }}
-      internal-url = "http://{{ include "docspell.fullname" . }}-restserver:7880"
+      internal-url = "http://{{ include "docspell.fullname" . }}-restserver:{{ .Values.restserver.bindPort }}"
 
       logging {
         minimum-level = "Debug"
@@ -47,7 +48,7 @@ restserver:
 
       bind {
         address = "0.0.0.0"
-        port = 7880
+        port = {{ .Values.restserver.bindPort }}
       }
 
       integration-endpoint {
