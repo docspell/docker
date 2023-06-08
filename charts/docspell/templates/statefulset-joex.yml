@@ -6,7 +6,7 @@ metadata:
     {{- include "docspell.labels" . | nindent 4 }}
     docspell-component: joex
 spec:
-  replicas: 1
+  replicas: {{ .Values.joex.replicas | default 1 }}
   selector:
     matchLabels:
       {{- include "docspell.selectorLabels" . | nindent 6 }}

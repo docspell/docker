@@ -20,6 +20,7 @@ restserver:
     repo: 'docspell/restserver'
     tag: null
     pullPolicy: null
+  replicas: 1
   appName: Docspell
   publicDomain: documents.example.org
   serverSecret: null
@@ -107,6 +108,7 @@ joex:
     repo: 'docspell/joex'
     tag: null
     pullPolicy: null
+  replicas: 1
   config: |
     docspell.joex {
       app-id = ${HOSTNAME}
