@@ -131,6 +131,7 @@ joex:
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+  jvmOptions: []
   config: |
     docspell.joex {
       app-id = ${HOSTNAME}

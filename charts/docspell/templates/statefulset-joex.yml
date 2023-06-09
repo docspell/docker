@@ -28,7 +28,12 @@ spec:
         image: {{ print .Values.joex.image.repo ":" (.Values.joex.image.tag | default .Values.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
         imagePullPolicy: {{ .Values.joex.image.pullPolicy | default .Values.image.pullPolicy | quote }}
         command: ['/custom-entrypoint.sh']
-        args: ['/opt/docspell.conf']
+        args:
+        {{- range .Values.joex.jvmOptions }}
+        - {{ . | quote }}
+        {{- end }}
+        - '--'
+        - '/opt/docspell.conf'
         envFrom:
         - secretRef:
             name: {{ .Values.jdbc.credentialsSecretName }}
