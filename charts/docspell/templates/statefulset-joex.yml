@@ -44,6 +44,8 @@ spec:
           mountPath: /custom-entrypoint.sh
           subPath: entrypoint.sh
           readOnly: true
+        resources:
+          {{- toYaml .Values.joex.resources | nindent 12 }}
       volumes:
       - name: config
         secret:

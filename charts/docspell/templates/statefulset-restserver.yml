@@ -39,6 +39,8 @@ spec:
         - name: api
           containerPort: {{ .Values.restserver.bindPort }}
           protocol: TCP
+        resources:
+          {{- toYaml .Values.restserver.resources | nindent 12 }}
       volumes:
       - name: config
         secret:
