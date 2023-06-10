@@ -132,6 +132,7 @@ joex:
   #   cpu: 100m
   #   memory: 128Mi
   jvmOptions: []
+  timeouts: {}
   config: |
     docspell.joex {
       app-id = ${HOSTNAME}
@@ -155,6 +156,20 @@ joex:
           use-default-connection = true
         }
       }
+
+      {{- if .Values.joex.timeouts }}
+      extraction {
+        ocr {
+          {{- range $command, $timeout := .Values.joex.timeouts }}
+          {{ $command }} {
+            command {
+              timeout = {{ $timeout | default "5 minutes" | quote }}
+            }
+          }
+          {{- end }}
+        }
+      }
+      {{- end }}
 
       files {
     {{ tpl (.Values.files.config | default "" | indent 4) $ }}
