@@ -26,6 +26,6 @@ jobs:
         tag="${GITHUB_REF##*/}"
         if [ "$tag" = 'main' ]; then tag='latest'; fi
         image_name="ghcr.io/docspell/joex:${tag}"
-        docker build --cache-from type=gha --cache-to type=gha,mode=max -t "$image_name" .
+        docker build --cache-from type=gha --cache-to type=gha,mode=max -t "$image_name" -f Dockerfile.joex .
         docker push "$image_name"
 
