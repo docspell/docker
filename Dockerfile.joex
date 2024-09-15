@@ -1,4 +1,4 @@
-FROM ubuntu:oracular AS base
+FROM docker.io/library/ubuntu:oracular-20240811.1 AS base
 
 
 RUN apt update \
