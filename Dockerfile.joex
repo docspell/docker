@@ -1,4 +1,4 @@
-FROM ubuntu:oracular AS base
+FROM ubuntu:oracular-20240617 AS base
 
 
 RUN apt update \
