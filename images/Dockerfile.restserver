@@ -20,7 +20,7 @@ RUN curl -sLfo restserver.zip "https://github.com/eikek/docspell/releases/downlo
   unzip restserver.zip && \
   rm restserver.zip && \
   mv docspell-restserver-* docspell-restserver && \
-  rm docspell-restserver/conf/docspell-restserver.conf && \
+  rm docspell-restserver/conf/docspell-server.conf && \
   echo "$DOCSPELL_VERSION" > docspell-restserver/version
 
 FROM base
