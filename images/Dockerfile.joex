@@ -1,5 +1,3 @@
-ARG DOCSPELL_VERSION=0.42.0
-
 FROM docker.io/library/ubuntu:oracular-20241009 AS base
 
 RUN apt update \
@@ -30,21 +28,19 @@ RUN apt install -y \
 
 WORKDIR /opt
 
-ARG DOCSPELL_VERSION
+ARG DOCSPELL_VERSION=0.42.0
 RUN curl -sLfo joex.zip "https://github.com/eikek/docspell/releases/download/v${DOCSPELL_VERSION}/docspell-joex-${DOCSPELL_VERSION}.zip" && \
   unzip joex.zip && \
   rm joex.zip && \
   mv docspell-joex-* docspell-joex && \
-  rm docspell-joex/conf/docspell-joex.conf
+  rm docspell-joex/conf/docspell-joex.conf && \
+  echo "$DOCSPELL_VERSION" > docspell-joex/version
 
 FROM base
 
 COPY --from=download /opt/docspell-joex /opt/docspell-joex
 
 COPY joex-entrypoint.sh /opt/joex-entrypoint.sh
-
-ARG DOCSPELL_VERSION
-RUN echo "$DOCSPELL_VERSION" > /opt/docspell-joex/version
 
 ENTRYPOINT ["/opt/joex-entrypoint.sh"]
 EXPOSE 7878
