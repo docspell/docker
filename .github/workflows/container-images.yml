@@ -22,7 +22,7 @@ jobs:
     - name: Build the Docker image
       run: |
         cd images
-        ./build joex
+        ./build.sh joex
   build-restserver:
     runs-on: ubuntu-latest
     steps:
@@ -36,5 +36,5 @@ jobs:
     - name: Build the Docker image
       run: |
         cd images
-        ./build restserver
+        ./build.sh restserver
 
