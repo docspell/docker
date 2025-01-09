@@ -3,5 +3,5 @@ name: docspell
 description: A Helm chart to deploy docspell to Kubernetes
 home: https://docspell.org/
 type: application
-version: 0.0.12
+version: 0.0.13
 appVersion: "0.42.0"

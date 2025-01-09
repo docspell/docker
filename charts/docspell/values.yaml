@@ -17,7 +17,7 @@ files:
 
 restserver:
   image:
-    repo: 'docspell/restserver'
+    repo: 'ghcr.io/docspell/restserver'
     tag: null
     pullPolicy: null
   replicas: 1
@@ -116,7 +116,7 @@ restserver:
 
 joex:
   image:
-    repo: 'docspell/joex'
+    repo: 'ghcr.io/docspell/joex'
     tag: null
     pullPolicy: null
   replicas: 1
