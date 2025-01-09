@@ -100,8 +100,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./docs:/opt/docs
-    depends_on:
-      - restserver
 
   db:
     image: postgres:17.2
