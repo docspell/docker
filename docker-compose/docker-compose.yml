@@ -1,3 +1,4 @@
+name: docspell
 services:
   # The restserver and joex containers defined here are configured
   # using env variables. Both must connect to the same database and
