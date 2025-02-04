@@ -7,7 +7,6 @@ metadata:
     docspell-component: restserver
 spec:
   replicas: {{ .Values.restserver.replicas | default 1 }}
-  replicas: 1
   selector:
     matchLabels:
       {{- include "docspell.selectorLabels" . | nindent 6 }}
