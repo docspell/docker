@@ -3,6 +3,17 @@ entries:
   docspell:
   - apiVersion: v2
     appVersion: 0.42.0
+    created: "2025-03-01T18:27:20.550538881Z"
+    description: A Helm chart to deploy docspell to Kubernetes
+    digest: 55a8d892518020a112a2dfc2c29d33feabf63336bdc729f47beb9c5904669951
+    home: https://docspell.org/
+    name: docspell
+    type: application
+    urls:
+    - https://github.com/docspell/docker/releases/download/docspell-0.0.15/docspell-0.0.15.tgz
+    version: 0.0.15
+  - apiVersion: v2
+    appVersion: 0.42.0
     created: "2025-02-04T14:58:39.771023192Z"
     description: A Helm chart to deploy docspell to Kubernetes
     digest: 3c128dd204f9a567441db90d9df839eef32272d4cea946305a91d79454929cb9
@@ -34,4 +45,4 @@ entries:
     urls:
     - https://github.com/docspell/docker/releases/download/docspell-0.0.12/docspell-0.0.12.tgz
     version: 0.0.12
-generated: "2025-02-04T14:58:39.771035505Z"
+generated: "2025-03-01T18:27:20.550568135Z"
