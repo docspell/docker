@@ -14,11 +14,12 @@ spec:
   serviceName: docspell-joex
   template:
     metadata:
+      annotations:
+        secret-hash: {{ include (print $.Template.BasePath "/secret-joex.yml") $ | sha256sum }}
+        config-hash: {{ include (print $.Template.BasePath "/configmap-joex.yml") $ | sha256sum }}
       labels:
         {{- include "docspell.selectorLabels" . | nindent 8 }}
         docspell-component: joex
-        secret-hash: {{ include (print $.Template.BasePath "/secret-joex.yml") $ | sha256sum }}
-        config-hash: {{ include (print $.Template.BasePath "/configmap-joex.yml") $ | sha256sum }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

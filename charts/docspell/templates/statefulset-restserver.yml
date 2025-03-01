@@ -13,10 +13,11 @@ spec:
       docspell-component: restserver
   template:
     metadata:
+      annotations:
+        config-hash: {{ include (print $.Template.BasePath "/secret-restserver.yml") $ | sha256sum }}
       labels:
         {{- include "docspell.selectorLabels" . | nindent 8 }}
         docspell-component: restserver
-        config-hash: {{ include (print $.Template.BasePath "/secret-restserver.yml") $ | sha256sum }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
