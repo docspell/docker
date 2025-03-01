@@ -82,10 +82,9 @@ restserver:
       auth {
         server-secret = {{ .Values.restserver.serverSecret | required "The server secret must be a long random string!" | quote }}
       }
-
-      {{- if .Values.adminEndpointSecret }}
+      {{ if .Values.restserver.adminEndpointSecret }}
       admin-endpoint {
-        secret = {{ .Values.adminEndpointSecret | quote }}
+        secret = {{ .Values.restserver.adminEndpointSecret | quote }}
       }
       {{- end }}
 
