@@ -17,7 +17,8 @@ spec:
       labels:
         {{- include "docspell.selectorLabels" . | nindent 8 }}
         docspell-component: joex
-        config-hash: {{ .Values.joex.config | adler32sum | quote }}
+        secret-hash: {{ include (print $.Template.BasePath "/secret-joex.yml") $ | sha256sum }}
+        config-hash: {{ include (print $.Template.BasePath "/configmap-joex.yml") $ | sha256sum }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
