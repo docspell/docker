@@ -15,6 +15,14 @@ jdbc:
 files:
   config: ''
 
+fullTextSearchConfig: |
+  enabled = true
+  backend = "postgresql"
+
+  postgresql = {
+    use-default-connection = true
+  }
+
 restserver:
   image:
     repo: 'ghcr.io/docspell/restserver'
@@ -68,12 +76,7 @@ restserver:
       }
 
       full-text-search {
-        enabled = true
-        backend = "postgresql"
-
-        postgresql = {
-          use-default-connection = true
-        }
+        {{- .Values.fullTextSearchConfig | nindent 4 }}
       }
 
       auth {
@@ -104,7 +107,7 @@ restserver:
         }
 
         files {
-    {{ tpl (.Values.files.config | default "" | indent 6) $ }}
+          {{- tpl (.Values.files.config | default "" | nindent 6) $ }}
         }
       }
     }
@@ -148,16 +151,11 @@ joex:
       }
 
       full-text-search {
-        enabled = true
-        backend = "postgresql"
-
-        postgresql = {
-          use-default-connection = true
-        }
+        {{- .Values.fullTextSearchConfig | nindent 4 }}
       }
 
       files {
-    {{ tpl (.Values.files.config | default "" | indent 4) $ }}
+        {{- tpl (.Values.files.config | default "" | nindent 4) $ }}
       }
     {{- range $name, $snippet := .Values.joex.configSnippets }}
       # Snippet: {{ $name }}
