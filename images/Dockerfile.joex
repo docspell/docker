@@ -35,7 +35,7 @@ RUN apt install -y \
 
 WORKDIR /opt
 
-ARG DOCSPELL_VERSION=0.42.0
+ARG DOCSPELL_VERSION=0.43.0
 RUN curl -sLfo joex.zip "https://github.com/eikek/docspell/releases/download/v${DOCSPELL_VERSION}/docspell-joex-${DOCSPELL_VERSION}.zip" && \
   unzip joex.zip && \
   rm joex.zip && \
