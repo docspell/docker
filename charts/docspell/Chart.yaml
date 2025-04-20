@@ -3,8 +3,7 @@ name: docspell
 description: A Helm chart to deploy docspell to Kubernetes
 home: https://docspell.org/
 type: application
-version: 0.0.19
+version: 0.0.20
 # this only tracks the restserver, but restserver's and joex's versions are synced
 # renovate: image=ghcr.io/docspell/restserver
 appVersion: "0.43.0"
-

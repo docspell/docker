@@ -36,9 +36,8 @@ spec:
         {{- end }}
         - '--'
         - '/opt/docspell.conf'
-        envFrom:
-        - secretRef:
-            name: {{ .Values.jdbc.credentialsSecretName }}
+        env:
+        {{- include "docspell.configVariables" (dict "Sources" (list .Values.configVariables .Values.joex.configVariables) "Root" $) | nindent 8 }}
         ports:
         - name: api
           containerPort: 7878

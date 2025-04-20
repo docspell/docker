@@ -49,3 +49,28 @@ Selector labels
 app.kubernetes.io/name: {{ include "docspell.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "docspell.configVariables" -}}
+{{- $configVars := dict }}
+{{- range $source := .Sources -}}
+{{- $configVars = mergeOverwrite $configVars (deepCopy $source) -}}
+{{- end }}
+{{- range $name, $config := $configVars }}
+{{- if $config.value }}
+- name: {{ $name }}
+{{- if $config.template }}
+  value: {{ tpl $config.value $.Root | quote }}
+{{- else }}
+  value: {{ $config.value | quote }}
+{{- end }}
+{{- else if $config.valueFrom }}
+- name: {{ $name }}
+{{- if $config.template }}
+  valueFrom: {{- tpl ($config.valueFrom | toYaml) $.Root | nindent 4 }}
+{{- else }}
+  valueFrom: {{- $config.valueFrom | nindent 4 }}
+{{- end }}
+{{- else }}
+{{- end }}
+{{- end }}
+{{- end }}

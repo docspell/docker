@@ -11,6 +11,12 @@ jdbc:
   port: 5432
   database: docspell
   credentialsSecretName: credentialsSecretName
+  config: |
+    jdbc {
+      url = ${JDBC_URI}
+      user = ${JDBC_USERNAME}
+      password = ${JDBC_PASSWORD}
+    }
 
 files:
   config: ''
@@ -23,11 +29,29 @@ fullTextSearchConfig: |
     use-default-connection = true
   }
 
+configVariables:
+  JDBC_URI:
+    template: true
+    value: 'jdbc:postgresql://{{ .Values.jdbc.host }}:{{ .Values.jdbc.port }}/{{ .Values.jdbc.database }}'
+  JDBC_USERNAME:
+    template: true
+    valueFrom:
+      secretKeyRef:
+        name: '{{ .Values.jdbc.credentialsSecretName }}'
+        key: username
+  JDBC_PASSWORD:
+    template: true
+    valueFrom:
+      secretKeyRef:
+        name: '{{ .Values.jdbc.credentialsSecretName }}'
+        key: password
+
 restserver:
   image:
     repo: 'ghcr.io/docspell/restserver'
     tag: null
     pullPolicy: null
+  configVariables: {}
   replicas: 1
   resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -90,11 +114,7 @@ restserver:
 
       # Configuration for the backend.
       backend {
-        jdbc {
-          url = {{ print "jdbc:postgresql://" .Values.jdbc.host ":" .Values.jdbc.port "/" .Values.jdbc.database | quote }}
-          user = ${username}
-          password = ${password}
-        }
+        {{- tpl (.Values.jdbc.config | default "" | nindent 4) $ }}
 
         # Configuration for registering new users.
         signup {
@@ -121,6 +141,7 @@ joex:
     repo: 'ghcr.io/docspell/joex'
     tag: null
     pullPolicy: null
+  configVariables: {}
   replicas: 1
   resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -143,11 +164,7 @@ joex:
         port = 7878
       }
 
-      jdbc {
-        url = {{ print "jdbc:postgresql://" .Values.jdbc.host ":" .Values.jdbc.port "/" .Values.jdbc.database | quote }}
-        user = ${username}
-        password = ${password}
-      }
+      {{- tpl (.Values.jdbc.config | default "" | nindent 2) $ }}
 
       full-text-search {
         {{- .Values.fullTextSearchConfig | nindent 4 }}

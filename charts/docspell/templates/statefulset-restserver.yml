@@ -28,9 +28,8 @@ spec:
         image: {{ print .Values.restserver.image.repo ":" (.Values.restserver.image.tag | default .Values.image.tag | default (print "v" .Chart.AppVersion)) | quote }}
         imagePullPolicy: {{ .Values.restserver.image.pullPolicy | default .Values.image.pullPolicy | quote }}
         args: ['/opt/docspell.conf']
-        envFrom:
-        - secretRef:
-            name: {{ .Values.jdbc.credentialsSecretName }}
+        env:
+        {{- include "docspell.configVariables" (dict "Sources" (list .Values.configVariables .Values.restserver.configVariables) "Root" $) | nindent 8 }}
         volumeMounts:
         - name: config
           mountPath: /opt/docspell.conf
