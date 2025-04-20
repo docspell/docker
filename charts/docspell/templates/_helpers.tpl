@@ -68,7 +68,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if $config.template }}
   valueFrom: {{- tpl ($config.valueFrom | toYaml) $.Root | nindent 4 }}
 {{- else }}
-  valueFrom: {{- $config.valueFrom | nindent 4 }}
+  valueFrom: {{- $config.valueFrom | toYaml | nindent 4 }}
 {{- end }}
 {{- else }}
 {{- end }}
