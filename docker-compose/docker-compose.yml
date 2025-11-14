@@ -102,7 +102,7 @@ services:
       - ./docs:/opt/docs
 
   db:
-    image: postgres:18.0
+    image: postgres:18.1
     container_name: postgres_db
     restart: unless-stopped
     volumes:
