@@ -113,7 +113,7 @@ services:
       POSTGRES_DB: 'dbname'
 
   solr:
-    image: solr:9
+    image: solr:10
     container_name: docspell-solr
     restart: unless-stopped
     volumes:
