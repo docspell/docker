@@ -118,10 +118,12 @@ services:
     restart: unless-stopped
     volumes:
       - solr_data:/var/solr
+    environment:
+      SOLR_OPTS: "-Dsolr.modules=analysis-extras"
     command:
       - bash
       - -c
-      - 'precreate-core docspell; exec solr -f -Dsolr.modules=analysis-extras'
+      - 'precreate-core docspell; exec solr start -f --user-managed'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8983/solr/docspell/admin/ping"]
       interval: 1m
