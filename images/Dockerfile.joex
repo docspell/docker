@@ -1,4 +1,4 @@
-FROM docker.io/library/ubuntu:oracular-20250619 AS base
+FROM docker.io/library/ubuntu:26.04 AS base
 
 RUN apt update \
  && apt full-upgrade -y \
