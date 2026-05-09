@@ -6,11 +6,22 @@ on:
     paths:
       - images/**
     branches:
-      - main
+      - feature/multi-platform
+
 
 jobs:
   build-joex:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      matrix:
+        image:
+          - joex
+          - restserver
+        platform:
+          - name: amd64
+            runner: ubuntu-latest
+          - name: arm64
+            runner: ubuntu-latest-arm
     steps:
     - uses: actions/checkout@v6
     - name: Login to GitHub Container Registry
@@ -20,21 +31,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build the Docker image
+      env:
+        IMAGE: ${{ matrix.image }}
+        PLATFORM: ${{ matrix.platform.name }}
       run: |
         cd images
-        ./build.sh joex
-  build-restserver:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v4
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build the Docker image
-      run: |
-        cd images
-        ./build.sh restserver
+        ./build.sh "$IMAGE" "$PLATFORM"
 

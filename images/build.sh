@@ -3,8 +3,9 @@
 set -euo pipefail
 
 name="${1?no name}"
+platform="${2?no platform}"
 
-repo="ghcr.io/docspell/$name"
+repo="ghcr.io/docspell/$name-$platform"
 image_name="${repo}:latest"
 docker build --cache-from type=gha --cache-to type=gha,mode=max -t "$image_name" -f "Dockerfile.$name" .
 docker push "$image_name"
