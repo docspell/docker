@@ -1,0 +1,52 @@
+FROM ghcr.io/astral-sh/uv:python3.14-trixie-slim AS builder
+
+ARG UNOSERVER_VERSION=3.7
+
+WORKDIR /build
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
+
+RUN uv pip install --prefix /opt/unoserver "unoserver==${UNOSERVER_VERSION}"
+
+# Ubuntu 26.04 ships Python 3.14 (matches the builder); Debian Trixie is still 3.13.
+FROM docker.io/library/ubuntu:26.04 AS runtime
+
+ARG UNOSERVER_VERSION=3.7
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PATH="/opt/unoserver/bin:${PATH}" \
+    PYTHONPATH="/opt/unoserver/lib/python3.14/site-packages" \
+    UNOSERVER_PORT=2003 \
+    UNOSERVER_INTERFACE=0.0.0.0 \
+    UNOSERVER_CONVERSION_TIMEOUT=120
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    libreoffice \
+    python3 \
+    python3-uno \
+    fonts-dejavu \
+    fonts-freefont-ttf \
+    fonts-noto \
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd --create-home unoserver
+
+COPY --from=builder /opt/unoserver /opt/unoserver
+
+COPY unoserver-entrypoint.sh /opt/unoserver-entrypoint.sh
+# uv scripts shebang to /usr/local/bin/python; Ubuntu provides /usr/bin/python3.
+RUN find /opt/unoserver/bin -type f -exec sed -i '1s|^#!.*|#!/usr/bin/python3|' {} + \
+ && chmod +x /opt/unoserver-entrypoint.sh /opt/unoserver/bin/* \
+ && echo "${UNOSERVER_VERSION}" > /opt/unoserver-version
+
+USER unoserver
+WORKDIR /home/unoserver
+
+EXPOSE 2003
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=45s \
+  CMD unoping --host 127.0.0.1 --port 2003
+
+ENTRYPOINT ["/opt/unoserver-entrypoint.sh"]

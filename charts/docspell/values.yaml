@@ -141,7 +141,21 @@ joex:
     repo: 'ghcr.io/docspell/joex'
     tag: null
     pullPolicy: null
-  configVariables: {}
+  configVariables:
+    # Sidecar shares the pod network; still use remote host-location
+    # because containers do not share a filesystem.
+    DOCSPELL_JOEX_CONVERT_UNOCONV_HOST: '127.0.0.1'
+    DOCSPELL_JOEX_CONVERT_UNOCONV_PORT: '2003'
+  unoserver:
+    # Sidecar for office→PDF conversion. Disable when pointing
+    # DOCSPELL_JOEX_CONVERT_UNOCONV_HOST at an external unoserver.
+    enabled: true
+    port: 2003
+    image:
+      repo: 'ghcr.io/docspell/unoserver'
+      tag: latest
+      pullPolicy: IfNotPresent
+    resources: {}
   replicas: 1
   resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
