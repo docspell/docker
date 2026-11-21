@@ -8,7 +8,13 @@ repo="ghcr.io/docspell/$name"
 image_name="${repo}:latest"
 docker build --cache-from type=gha --cache-to type=gha,mode=max -t "$image_name" -f "Dockerfile.$name" .
 docker push "$image_name"
-full_version="$(docker run --rm --entrypoint cat "$image_name" "/opt/docspell-$name/version")"
+
+if [[ "$name" == "unoserver" ]]; then
+  full_version="$(tr -d '[:space:]' < unoserver-version)"
+else
+  full_version="$(docker run --rm --entrypoint cat "$image_name" "/opt/docspell-$name/version")"
+fi
+
 full_version_name="${repo}:v${full_version}"
 docker tag "$image_name" "$full_version_name"
 docker push "$full_version_name"

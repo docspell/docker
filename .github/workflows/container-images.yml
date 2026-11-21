@@ -37,4 +37,18 @@ jobs:
       run: |
         cd images
         ./build.sh restserver
+  build-unoserver:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v4
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build the Docker image
+      run: |
+        cd images
+        ./build.sh unoserver
 

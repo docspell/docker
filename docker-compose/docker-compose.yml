@@ -46,6 +46,9 @@ services:
     image: ghcr.io/docspell/joex:latest
     hostname: docspell-joex
     container_name: docspell-joex
+    depends_on:
+      unoserver:
+        condition: service_healthy
     ## For more memory add corresponding arguments, like below. Also see
     ## https://docspell.org/docs/configure/#jvm-options
     # command:
@@ -65,12 +68,31 @@ services:
       DOCSPELL_JOEX_JDBC_USER: 'dbuser'
       DOCSPELL_JOEX_ADDONS_EXECUTOR__CONFIG_RUNNER: 'docker,trivial'
       DOCSPELL_JOEX_CONVERT_HTML__CONVERTER: 'weasyprint'
+      # Point unoconvert at the unoserver service (remote file transfer).
+      DOCSPELL_JOEX_CONVERT_UNOCONV_HOST: 'docspell-unoserver'
+      DOCSPELL_JOEX_CONVERT_UNOCONV_PORT: '2003'
     ports:
       - "7878:7878"
     ## Uncomment when using the "docker" runner with addons
     # volumes:
     #   - /var/run/docker.sock:/var/run/docker.sock
     #   - /tmp:/tmp
+
+  unoserver:
+    image: ghcr.io/docspell/unoserver:latest
+    build:
+      context: ../images
+      dockerfile: Dockerfile.unoserver
+    container_name: docspell-unoserver
+    restart: unless-stopped
+    # Mirrors Dockerfile HEALTHCHECK so depends_on: service_healthy works
+    # even when using a pre-built image without inspecting the Dockerfile.
+    healthcheck:
+      test: ["CMD", "unoping", "--host", "127.0.0.1", "--port", "2003"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
 
   # The consumedir container watches a directory for files to upload
   # to docspell restserver. This uses the `dsc` tool. For information

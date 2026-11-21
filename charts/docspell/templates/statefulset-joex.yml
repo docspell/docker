@@ -52,6 +52,43 @@ spec:
           readOnly: true
         resources:
           {{- toYaml .Values.joex.resources | nindent 12 }}
+      {{- if .Values.joex.unoserver.enabled }}
+      - name: unoserver
+        image: {{ print .Values.joex.unoserver.image.repo ":" (.Values.joex.unoserver.image.tag | default "latest") | quote }}
+        imagePullPolicy: {{ .Values.joex.unoserver.image.pullPolicy | quote }}
+        ports:
+        - name: unoserver
+          containerPort: {{ .Values.joex.unoserver.port | default 2003 }}
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - unoping
+            - --host
+            - 127.0.0.1
+            - --port
+            - {{ .Values.joex.unoserver.port | default 2003 | quote }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+        livenessProbe:
+          exec:
+            command:
+            - unoping
+            - --host
+            - 127.0.0.1
+            - --port
+            - {{ .Values.joex.unoserver.port | default 2003 | quote }}
+          initialDelaySeconds: 45
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        {{- with .Values.joex.unoserver.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- end }}
       volumes:
       - name: config
         secret:
